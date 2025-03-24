@@ -38,11 +38,11 @@ module LCD(
             WAIT: begin
                 if (counter >= MS - 1) begin
                     counter <= 0;
-						  if (init_done) begin
-								state <= UPDATE; // Sempre alterna para UPDATE
-						  end else begin
-								state <= INIT;
-						  end
+                    if (init_done) begin
+                        state <= UPDATE; // Sempre alterna para UPDATE
+                    end else begin
+                        state <= INIT;
+                    end
                 end else begin
                     counter <= counter + 1;
                 end
@@ -54,10 +54,10 @@ module LCD(
                     if (instructions < 7) begin
                         instructions <= instructions + 1;
                         state <= WAIT;
-						  end else begin
-								instructions <= 0;
-								state <= WAIT;
-						  end
+                    end else begin
+                        instructions <= 0;
+                        state <= WAIT;
+                    end
                 end else begin
                     counter <= counter + 1;
                 end
@@ -96,40 +96,39 @@ module LCD(
                     20: begin data <= 8'h2D; RS <= 1; end 
                     21: begin data <= 8'h5D; RS <= 1; end // ']'
                     22: begin data <= 8'hC0; RS <= 0; end // Segunda linha
-                    22: begin data <= 8'hC0; RS <= 0; end // Segunda Linha
-						  23: begin data <= 8'h14; RS <= 0; end // 0-1
-						  24: begin data <= 8'h14; RS <= 0; end // 1-2
-						  25: begin data <= 8'h14; RS <= 0; end // 2-3
-						  26: begin data <= 8'h14; RS <= 0; end // 3-4
-						  27: begin data <= 8'h14; RS <= 0; end // 4-5
-					  	  28: begin data <= 8'h14; RS <= 0; end // 5-6
-						  29: begin data <= 8'h14; RS <= 0; end // 7-8
-						  30: begin data <= 8'h14; RS <= 0; end // 8-9
-						  31: begin data <= 8'h14; RS <= 0; end // 9-10
-						  32: begin data <= 8'h14; RS <= 0; end // 10-11
-						  33: begin data <= 8'h2B; RS <= 1; end // +
-						  34: begin data <= 8'h30; RS <= 1; end // 0
-						  35: begin data <= 8'h30; RS <= 1; end
-						  36: begin data <= 8'h30; RS <= 1; end
-						  37: begin data <= 8'h30; RS <= 1; end
-						  38: begin data <= 8'h30; RS <= 1; end
-						 default: begin data <= 8'h02; RS <= 0; end // home
+                    23: begin data <= 8'h14; RS <= 0; end // 0-1
+                    24: begin data <= 8'h14; RS <= 0; end // 1-2
+                    25: begin data <= 8'h14; RS <= 0; end // 2-3
+                    26: begin data <= 8'h14; RS <= 0; end // 3-4
+                    27: begin data <= 8'h14; RS <= 0; end // 4-5
+                    28: begin data <= 8'h14; RS <= 0; end // 5-6
+                    29: begin data <= 8'h14; RS <= 0; end // 7-8
+                    30: begin data <= 8'h14; RS <= 0; end // 8-9
+                    31: begin data <= 8'h14; RS <= 0; end // 9-10
+                    32: begin data <= 8'h14; RS <= 0; end // 10-11
+                    33: begin data <= 8'h2B; RS <= 1; end // +
+                    34: begin data <= 8'h30; RS <= 1; end // 0
+                    35: begin data <= 8'h30; RS <= 1; end
+                    36: begin data <= 8'h30; RS <= 1; end
+                    37: begin data <= 8'h30; RS <= 1; end
+                    38: begin data <= 8'h30; RS <= 1; end
+                    default: begin data <= 8'h02; RS <= 0; end // home
                 endcase
             end
 
             UPDATE: begin
                 case (opcode)
-						  3'b000:begin
-							case(instructions)
-									0: begin data <= 8'h02; RS <= 0; l2 <= 1'b1; end // Home
-									1: begin data <= 8'h06; RS <= 0; end // Move cursor para direita
-									2: begin data <= 8'h4C; RS <= 1; end // 'L'
-									3: begin data <= 8'h4F; RS <= 1; end // 'O'
-									4: begin data <= 8'h41; RS <= 1; end // 'A'
-									5: begin data <= 8'h44; RS <= 1; end // 'D'
-									default: begin data <= 8'h02; RS <= 0; end // Home
-								endcase
-						  end
+                    3'b000: begin
+                        case(instructions)
+                            0: begin data <= 8'h02; RS <= 0; l2 <= 1'b1; end // Home
+                            1: begin data <= 8'h06; RS <= 0; end // Move cursor para direita
+                            2: begin data <= 8'h4C; RS <= 1; end // 'L'
+                            3: begin data <= 8'h4F; RS <= 1; end // 'O'
+                            4: begin data <= 8'h41; RS <= 1; end // 'A'
+                            5: begin data <= 8'h44; RS <= 1; end // 'D'
+                            default: begin data <= 8'h02; RS <= 0; end // Home
+                        endcase
+                    end
                     3'b001: begin
                         case (instructions)
                             0: begin data <= 8'h02; RS <= 0; l2 <= 1'b1; end // Home
@@ -137,80 +136,80 @@ module LCD(
                             2: begin data <= 8'h41; RS <= 1; end // 'A'
                             3: begin data <= 8'h44; RS <= 1; end // 'D'
                             4: begin data <= 8'h44; RS <= 1; end // 'D'
-									 5: begin data <= 8'h20; RS <= 1; end // espaço
+                            5: begin data <= 8'h20; RS <= 1; end // espaço
                             default: begin data <= 8'h02; RS <= 0; end // Home
                         endcase
                     end
-						  3'b010: begin
+                    3'b010: begin
                         case (instructions)
                             0: begin data <= 8'h02; RS <= 0; l2 <= 1'b1; end // Home
                             1: begin data <= 8'h06; RS <= 0; end // Move cursor para direita
                             2: begin data <= 8'h41; RS <= 1; end // 'A'
                             3: begin data <= 8'h44; RS <= 1; end // 'D'
                             4: begin data <= 8'h44; RS <= 1; end // 'D'
-									 5: begin data <= 8'h49; RS <= 1; end // 'I'
+                            5: begin data <= 8'h49; RS <= 1; end // 'I'
                             default: begin data <= 8'h02; RS <= 0; end // Home
                         endcase
                     end
-						  3'b011: begin
+                    3'b011: begin
                         case (instructions)
                             0: begin data <= 8'h02; RS <= 0; l2 <= 1'b1; end // Home
                             1: begin data <= 8'h06; RS <= 0; end // Move cursor para direita
                             2: begin data <= 8'h53; RS <= 1; end // 'S'
                             3: begin data <= 8'h55; RS <= 1; end // 'U'
                             4: begin data <= 8'h42; RS <= 1; end // 'B'
-									 5: begin data <= 8'h20; RS <= 1; end // espaço
+                            5: begin data <= 8'h20; RS <= 1; end // espaço
                             default: begin data <= 8'h02; RS <= 0; end // Home
                         endcase
                     end
-						  3'b100:begin//subI
-								case(instructions)
-									 0: begin data <= 8'h02; RS <= 0; l2 <= 1'b1; end // Home
+                    3'b100: begin // subI
+                        case(instructions)
+                            0: begin data <= 8'h02; RS <= 0; l2 <= 1'b1; end // Home
                             1: begin data <= 8'h06; RS <= 0; end // Move cursor para direita
                             2: begin data <= 8'h53; RS <= 1; end // 'S'
                             3: begin data <= 8'h55; RS <= 1; end // 'U'
                             4: begin data <= 8'h42; RS <= 1; end // 'B'
-									 5: begin data <= 8'h49; RS <= 1; end // 'I'
-									 default: begin data <= 8'h02; RS <= 0; end // Home
-								endcase
-							end
-							3'b101:begin//MUL
-								case(instructions)
-									0: begin data <= 8'h02; RS <= 0; l2 <= 1'b1; end // Home
-									1: begin data <= 8'h06; RS <= 0; end // Move cursor para direita
-									2: begin data <= 8'h4D; RS <= 1; end // 'M'
-									3: begin data <= 8'h55; RS <= 1; end // 'U'
-									4: begin data <= 8'h4C; RS <= 1; end // 'L'
-									5: begin data <= 8'h20; RS <= 1; end // espaço
-									default: begin data <= 8'h02; RS <= 0; end // Home
-								endcase
-							end
-							3'b110:begin//CLR
-								case(instructions)
-									0: begin data <= 8'h02; RS <= 0; l2 <= 1'b1; end // Home
-									1: begin data <= 8'h06; RS <= 0; end // Move cursor para direita
-									2: begin data <= 8'h43; RS <= 1; end // 'C'
-									3: begin data <= 8'h4C; RS <= 1; end // 'L'
-									4: begin data <= 8'h52; RS <= 1; end // 'R'
-									5: begin data <= 8'h20; RS <= 1; end // espaço
-									default: begin data <= 8'h02; RS <= 0; end // Home
-								endcase
-							end
-							3'b111:begin//DPL
-								case(instructions)
-									0: begin data <= 8'h02; RS <= 0; l2 <= 1'b1; end // Home
-									1: begin data <= 8'h06; RS <= 0; end // Move cursor para direita
-									2: begin data <= 8'h44; RS <= 1; end // 'D'
-									3: begin data <= 8'h50; RS <= 1; end // 'P'
-									4: begin data <= 8'h4C; RS <= 1; end // 'L'
-									5: begin data <= 8'h20; RS <= 1; end // espaço
-									default: begin data <= 8'h02; RS <= 0; end // Home
-								endcase
-							end
-						endcase
-					end
-			endcase
-	 end
+                            5: begin data <= 8'h49; RS <= 1; end // 'I'
+                            default: begin data <= 8'h02; RS <= 0; end // Home
+                        endcase
+                    end
+                    3'b101: begin // MUL
+                        case(instructions)
+                            0: begin data <= 8'h02; RS <= 0; l2 <= 1'b1; end // Home
+                            1: begin data <= 8'h06; RS <= 0; end // Move cursor para direita
+                            2: begin data <= 8'h4D; RS <= 1; end // 'M'
+                            3: begin data <= 8'h55; RS <= 1; end // 'U'
+                            4: begin data <= 8'h4C; RS <= 1; end // 'L'
+                            5: begin data <= 8'h20; RS <= 1; end // espaço
+                            default: begin data <= 8'h02; RS <= 0; end // Home
+                        endcase
+                    end
+                    3'b110: begin // CLR
+                        case(instructions)
+                            0: begin data <= 8'h02; RS <= 0; l2 <= 1'b1; end // Home
+                            1: begin data <= 8'h06; RS <= 0; end // Move cursor para direita
+                            2: begin data <= 8'h43; RS <= 1; end // 'C'
+                            3: begin data <= 8'h4C; RS <= 1; end // 'L'
+                            4: begin data <= 8'h52; RS <= 1; end // 'R'
+                            5: begin data <= 8'h20; RS <= 1; end // espaço
+                            default: begin data <= 8'h02; RS <= 0; end // Home
+                        endcase
+                    end
+                    3'b111: begin // DPL
+                        case(instructions)
+                            0: begin data <= 8'h02; RS <= 0; l2 <= 1'b1; end // Home
+                            1: begin data <= 8'h06; RS <= 0; end // Move cursor para direita
+                            2: begin data <= 8'h44; RS <= 1; end // 'D'
+                            3: begin data <= 8'h50; RS <= 1; end // 'P'
+                            4: begin data <= 8'h4C; RS <= 1; end // 'L'
+                            5: begin data <= 8'h20; RS <= 1; end // espaço
+                            default: begin data <= 8'h02; RS <= 0; end // Home
+                        endcase
+                    end
+                endcase
+            end
+        endcase
+    end
 
     assign out = data;
     assign RS_out = RS;
