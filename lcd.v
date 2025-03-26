@@ -17,9 +17,9 @@ module LCD(
     reg [7:0] data;
     reg [7:0] instructions = 0;
     reg [31:0] counter = 0;
-    reg init_done = 0; // Indica se INIT já foi concluído
+    reg init_done = 0; // Indica se INIT foi concluído
 	 reg oprt_done = 0; // Indica se OPRT foi concluido
-	 reg endr_done = 0;
+	 reg endr_done = 0; // Indica se ENDR foi concluido
 	 reg data_done = 0; // Indica se DATA foi concluido
 
     always @(posedge clk) begin
@@ -44,7 +44,6 @@ module LCD(
                 if (counter >= MS - 1) begin
                     counter <= 0;
 						  if (oprt_done && data_done && init_done && data_done) begin
-								init_done <= 1;
 								oprt_done <= 0;
 								data_done <= 0;
 								endr_done <= 0;
@@ -71,7 +70,7 @@ module LCD(
                         instructions <= instructions + 1;
                         state <= WAIT;
                     end else begin
-                        oprt_done <= 1;
+                        oprt_done <= 1; //FLAG QUE PERMITE MUDANÇA DE REGS E DATA
                         instructions <= 0;
                         state <= WAIT;
                     end
@@ -139,13 +138,12 @@ module LCD(
                     14: begin data <= 8'h14; RS <= 0; end
                     15: begin data <= 8'h14; RS <= 0; end
                     16: begin data <= 8'h5B; RS <= 1; end // '['
-                    17: begin data <= 8'h2D; RS <= 1; end 
+                    17: begin data <= 8'h2D; RS <= 1; end //'-'
                     18: begin data <= 8'h2D; RS <= 1; end 
                     19: begin data <= 8'h2D; RS <= 1; end 
                     20: begin data <= 8'h2D; RS <= 1; end 
                     21: begin data <= 8'h5D; RS <= 1; end // ']'
                     22: begin data <= 8'hC0; RS <= 0; end // Segunda linha
-                    22: begin data <= 8'hC0; RS <= 0; end // Segunda Linha
 						  23: begin data <= 8'h14; RS <= 0; end // 0-1
 						  24: begin data <= 8'h14; RS <= 0; end // 1-2
 						  25: begin data <= 8'h14; RS <= 0; end // 2-3
@@ -270,10 +268,10 @@ module LCD(
 						  4: begin data <= 8'h14; RS <= 0; end
 						  5: begin data <= 8'h14; RS <= 0; end
 						  6: begin data <= 8'h5B; RS <= 1; end // '['
-						  7: begin data <= (endreg[3] ? 8'h31 : 8'h30); RS <= 1; end // '1' ou '0'
-						  8: begin data <= (endreg[2] ? 8'h31 : 8'h30); RS <= 1; end // '1' ou '0'
-						  9: begin data <= (endreg[1] ? 8'h31 : 8'h30); RS <= 1; end // '1' ou '0'
-						  10: begin data <= (endreg[0] ? 8'h31 : 8'h30); RS <= 1; end // '1' ou '0'
+						  7: begin data <= ((opcode==3'b110)? 8'h2D :(endreg[3] ? 8'h31 : 8'h30)); RS <= 1; end // '1' ou '0'
+						  8: begin data <= ((opcode==3'b110)? 8'h2D :(endreg[2] ? 8'h31 : 8'h30)); RS <= 1; end // '1' ou '0'
+						  9: begin data <= ((opcode==3'b110)? 8'h2D :(endreg[1] ? 8'h31 : 8'h30)); RS <= 1; end // '1' ou '0'
+						  10: begin data <=((opcode==3'b110)? 8'h2D :(endreg[0] ? 8'h31 : 8'h30)); RS <= 1; end // '1' ou '0'
 						  11: begin data <= 8'h5D; RS <= 1; end // ']'
 						  //default: begin data <= 8'h02; RS <= 0; end // Home
 					 endcase
@@ -293,12 +291,12 @@ module LCD(
 						  9: begin data <= 8'h14; RS <= 0; end // 8-9
 						  10: begin data <= 8'h14; RS <= 0; end // 9-10
 						  11: begin data <= 8'h14; RS <= 0; end // 10-11
-                    12: begin data <= imm[6] ? 8'h2D : 8'h2B; RS <= 1; end // '-' se negativo, '+' se positivo
-                    13: begin data <= 8'h30 + ((imm / 10000) % 10); RS <= 1; end // Dígito da dezena de milhar
-                    14: begin data <= 8'h30 + ((imm/1000) % 10); RS <= 1; end // Dígito da unidade de milhar
-						  15: begin data <= 8'h30 + ((imm/100) % 10); RS <= 1; end // Dígito da centenas
-						  16: begin data <= 8'h30 + ((imm/10) % 10); RS <= 1; end // Dígito da dezenas
-						  17: begin data <= 8'h30 + (imm % 10); RS <= 1; end // Dígito da unidades
+                    12: begin data <= (imm[6] && imm[5:0]!=6'b000000) ? 8'h2D : 8'h2B; RS <= 1; end // '-' se negativo, '+' se positivo
+                    13: begin data <= 8'h30 + ((imm[5:0] / 10000) % 10); RS <= 1; end // Dígito da dezena de milhar
+                    14: begin data <= 8'h30 + ((imm[5:0]/1000) % 10); RS <= 1; end // Dígito da unidade de milhar
+						  15: begin data <= 8'h30 + ((imm[5:0]/100) % 10); RS <= 1; end // Dígito da centenas
+						  16: begin data <= 8'h30 + ((imm[5:0]/10) % 10); RS <= 1; end // Dígito da dezenas
+						  17: begin data <= 8'h30 + (imm[5:0] % 10); RS <= 1; end // Dígito da unidades
                 endcase
             end
 		endcase	
@@ -309,5 +307,4 @@ module LCD(
     assign led1 = l2;
     assign led2 = l1;
     assign RW_out = 0; // Sempre em modo de escrita
-
 endmodule
